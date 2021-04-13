@@ -4,7 +4,7 @@
 #include "fauxmoESP.h"
 #include <ArduinoJson.h>
 
-#define SERIAL_BAUDRATE 115200
+#define SERIAL_BAUDRATE 9600
 
 #define WIFI_SSID "paes"
 #define WIFI_PASS "garfield laranja"
@@ -21,9 +21,9 @@ void wifiSetup() {
 }
 void setup() {
   Serial.begin(SERIAL_BAUDRATE);
+  
   wifiSetup();
   pinMode(RELAY_PIN_1, OUTPUT);
-  digitalWrite(RELAY_PIN_1, HIGH);
   fauxmo.setPort(80); 
 
   fauxmo.enable(true);
@@ -32,18 +32,14 @@ void setup() {
 
   fauxmo.onSetState([](unsigned char device_id, const char * device_name, bool state, unsigned char value) {
     if ( (strcmp(device_name, LAMP_1) == 0) ) {
-
+  StaticJsonDocument<200> doc;
         if (state) {
-           StaticJsonDocument<200> doc;
-        doc["HORTA"] = 1;
-        
-          serializeJson(doc, Serial);
+        doc["HORTA"] = "ON";
       } else {
-         StaticJsonDocument<200> doc;
-         doc["HORTA"] = 0;
-           serializeJson(doc, Serial);
+         doc["HORTA"] = "OFF";
       }
-   
+    serializeJson(doc, Serial);
+    Serial.println();
     }
   });
 
