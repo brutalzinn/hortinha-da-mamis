@@ -32,10 +32,18 @@ void setup() {
 
   fauxmo.onSetState([](unsigned char device_id, const char * device_name, bool state, unsigned char value) {
     if ( (strcmp(device_name, LAMP_1) == 0) ) {
-  StaticJsonDocument<200> doc;
-      doc["HORTA"] = state;
-     serializeJson(doc, Serial);
-      Serial.println();
+
+        if (state) {
+           StaticJsonDocument<200> doc;
+        doc["HORTA"] = 1;
+        
+          serializeJson(doc, Serial);
+      } else {
+         StaticJsonDocument<200> doc;
+         doc["HORTA"] = 0;
+           serializeJson(doc, Serial);
+      }
+   
     }
   });
 
